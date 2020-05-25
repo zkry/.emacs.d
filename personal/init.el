@@ -62,6 +62,10 @@
 (setq magit-circleci-token "79f490d972d5df482eacfc0c6dac7daa311d19aa")
 (magit-circleci-mode)
 
+;; rainbow delimiter
+(require 'rainbow-delimiters)
+(setq rainbow-delimiters-mode nil)
+
 ;; smartparens
 (smartparens-global-strict-mode t)
 

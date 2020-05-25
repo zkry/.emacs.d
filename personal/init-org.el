@@ -11,6 +11,9 @@
         ("n" "Note" entry (file "~/Dropbox/org/refile.org")
          "* %?\n  %i\n  %a")))
 
+(setq org-clock-persist 'history)
+(org-clock-persistence-insinuate)
+
 (setq org-agenda-files (list "~/Dropbox/org/organizer.org" "~/Dropbox/org/tickler.org"))
 (setq org-default-notes-file "~/Dropbox/org/refile.org")
 
@@ -19,3 +22,6 @@
             (local-set-key (kbd "s-<up>") #'org-move-subtree-up)
             (local-set-key (kbd "s-<down>") #'org-move-subtree-down)
             (local-set-key (kbd "<M-S-return>") #'org-insert-todo-heading-respect-content)))
+
+(defun zr/sort-by-estimation ()
+  (string-to-number (or (org-entry-get nil "ESTIMATION") "0")))
