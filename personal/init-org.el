@@ -3,6 +3,7 @@
 (require 'org-agenda)
 (require 'org-clock)
 (require 'org-table)
+(require 'org-habit)
 
 (global-set-key (kbd "C-c c") 'org-capture)
 (setq org-todo-keywords
@@ -38,6 +39,8 @@
 
 (setq org-agenda-todo-ignore-deadlines nil)
 (setq org-agenda-todo-ignore-scheduled 'future)
+
+(setq org-refile-targets '((org-agenda-files :maxlevel . 9)))
 
 (setq org-agenda-custom-commands
       (quote (("g" "GTD"
