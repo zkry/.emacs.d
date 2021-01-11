@@ -59,7 +59,7 @@
 
 (defun zr/open-organizer ()
   (interactive)
-  (find-file "~/Dropbox/org/organizer.org"))
+  (find-file "~/Dropbox/org/organizerV2.org"))
 
 (defun zr/open-notes ()
   (interactive)
@@ -71,6 +71,92 @@
   (goto-char (point-min))
   (search-forward "* TIL")
   (insert (format "\n** %s " (format-time-string "%d-%m-%Y"))))
+
+(require 'org-pomodoro)
+(defconst zr/org-pomodoro-bitbar-file-name
+  "~/dev/bitbar/org-pomodoro.10s.sh"
+  "The name of the org-pomodoro file for bitbar to see.")
+(defvar zr/org-pomodoro-ticker
+  0
+  "Ticker to keep track of how many ticks called.")
+
+(defun zr/org-pomodoro-color (time)
+  "Calculate the color to display TIME in bitbar."
+  (if (equal org-pomodoro-state ':short-break)
+      "blue"
+    (let* ((parts (split-string time ":"))
+           (mins (string-to-number (car parts)))
+           (secs (string-to-number (cadr parts))))
+      (if (< mins 5) "red" "black"))))
+
+(defun zr/org-pomodoro-update-bitbar ()
+  "Update bitbar with pomodoro time."
+  (let* ((time-str (org-pomodoro-format-seconds))
+         (color-str (zr/org-pomodoro-color time-str ))
+         (file-name (format "~/pomodoro.txt")))
+    (if (equal "00:00" time-str)
+        (shell-command-to-string (format "echo '0' > %s" file-name))
+      (shell-command-to-string (format "echo '🍅%s | color=\"%s\"' > %s" (org-pomodoro-format-seconds) color-str file-name)))))
+
+
+
+(defvar zr/org-clock--timer nil "Timer to write to file.")
+
+(defun zr/org-clock-update-bitbar ()
+  (let* ((time-secs (float-time (time-subtract (current-time) org-clock-start-time)))
+         (mins (/ time-secs 60))
+         (secs (mod time-secs 60))
+         (file-name "~/pomodoro.txt")
+         (time-str (format "%02dm%02ds" mins secs)))
+    (shell-command-to-string (format "echo '%s' > %s" time-str file-name))))
+
+(defun zr/org-clock-start-timer ()
+  (message "starting org-clock timer")
+  (when (> (float-time (time-subtract (current-time) org-pomodoro-last-clock-in)) 1)
+    ;; you can start org timer printer
+    (when zr/org-clock--timer
+      (cancel-timer zr/org-clock--timer))
+    (setq zr/org-clock--timer (run-with-timer 5 5 #'zr/org-clock-update-bitbar))))
+(defun zr/org-clock-stop-timer ()
+  (message "stopping org-clock timer")
+  (when zr/org-clock--timer
+    (zr/org-pomodoro-delete-bitbar-file)
+    (cancel-timer zr/org-clock--timer)
+    (setq zr/org-clock--timer nil)))
+
+
+(defun zr/org-pomodoro-bitbar-tick ()
+  (setq zr/org-pomodoro-ticker (1+ zr/org-pomodoro-ticker))
+  (when (= (mod zr/org-pomodoro-ticker 10) 0)
+    (zr/org-pomodoro-update-bitbar)))
+
+(defun zr/org-pomodoro-start-bitbar-file ()
+  "Create bitbar file."
+  ;; (shell-command-to-string
+  ;;  (concat (format "echo '#!/bin/bash' > %s" zr/org-pomodoro-bitbar-file-name)
+  ;;          ";"
+  ;;          (format "echo 'cat /Users/zromero/pomodoro.txt' >> %s" zr/org-pomodoro-bitbar-file-name)
+  ;;          ";"
+  ;;          (format "chmod +x %s" zr/org-pomodoro-bitbar-file-name)))
+  (zr/org-pomodoro-update-bitbar))
+
+(defun zr/org-pomodoro-delete-bitbar-file ()
+  "Delete the org Pomodoro bitbar file."
+  (shell-command-to-string
+   "echo '0' > ~/pomodoro.txt"))
+
+(add-hook 'org-pomodoro-tick-hook 'zr/org-pomodoro-bitbar-tick)
+(add-hook 'org-pomodoro-started-hook 'zr/org-pomodoro-start-bitbar-file)
+(add-hook 'org-pomodoro-killed-hook 'zr/org-pomodoro-delete-bitbar-file)
+(add-hook 'org-pomodoro-finished-hook 'zr/org-pomodoro-delete-bitbar-file)
+(add-hook 'org-pomodoro-break-finished-hook 'zr/org-pomodoro-delete-bitbar-file)
+
+(setq org-pomodoro-finished-sound "/Users/zromero/dev/emacs/alarm.wav")
+(setq org-pomodoro-short-break-sound "/Users/zromero/dev/emacs/positive-blip.wav")
+(setq org-pomodoro-long-break-sound "/Users/zromero/dev/emacs/positive-blip.wav")
+
+(add-hook 'org-clock-in-hook 'zr/org-clock-start-timer)
+(add-hook 'org-clock-out-hook 'zr/org-clock-stop-timer)
 
 (require 'whitespace)
 (setq-default tab-width 4)
@@ -103,6 +189,32 @@
                                         ;(setq magit-circleci-token "79f490d972d5df482eacfc0c6dac7daa311d19aa")
                                         ;(magit-circleci-mode)
 
+;; diminish
+(diminish 'guru-mode)
+(diminish 'yas-minor-mode)
+(diminish 'flycheck-mode)
+(diminish 'company-mode)
+(diminish 'ivy-mode)
+(diminish 'editorconfig-mode)
+(diminish 'whitespace-mode)
+(defun zr/shorten-name (name)
+  (message name)
+  (cond
+    ((= name "tde-delivery-engine") "DE")
+    (t "???")))
+(diminish 'projectile-mode '(:eval (format " Prj(%s)" (projectile-project-name))))
+(diminish 'flyspell-mode)
+(diminish 'prelude-mode)
+(diminish 'which-key-mode)
+(diminish 'beacon-mode)
+(diminish 'org-table-header-line-mode)
+(diminish 'abbrev-mode)
+(diminish 'subword-mode)
+(diminish 'smartparens-mode)
+(diminish 'intentional-minor-mode)
+(diminish 'org-roam-mode)
+(diminish 'guru-mode)
+
 ;; rainbow delimiter
 (require 'rainbow-delimiters)
 (setq rainbow-delimiters-mode nil)
@@ -112,6 +224,13 @@
 
 (setq super-save-mode nil)
 
+;; ibuffer
+(require 'ibuffer-projectile)
+(add-hook 'ibuffer-hook
+          (lambda ()
+            (ibuffer-projectile-set-filter-groups)
+            (unless (eq ibuffer-sorting-mode 'alphabetic)
+              (ibuffer-do-sort-by-alphabetic))))
 
 ;; elfeed
 (setq elfeed-feeds
@@ -131,6 +250,7 @@
         ("https://emacsredux.com/feed.xml" emacs)
         ("https://irreal.org/blog/?feed=rss2" emacs)
         ("http://blog.binchen.org/rss.xml" emacs)
+        ("https://200ok.ch/atom.xml" emacs)
         ("https://bzg.fr/index.xml" emacs)
         ("https://updates.orgmode.org/feed/help" org)
         ("https://defn.io/index.xml" racket)))
@@ -198,7 +318,65 @@
 
 
 (require 'awqat)
+;; Berlin
 (setq calendar-latitude 52.499
       calendar-longitude 13.436)
+;; AZ
+;;(setq calendar-latitude 40.98
+;;      calendar-longitude 28.8)
+
 (setq awqat-asr-hanafi nil)
 (awqat-set-preset-diyanet)
+(setq awqat-fajr-angle -20.70)
+(setq awqat-isha-angle -16.3)
+(setq awqat-prayer-safety-offsets
+      '(0.0 0.0 7.0 -9.0 0.0 0.0))
+
+(setq term-prompt-regexp "[^\n%]*% *")
+
+;; geiser
+(require 'geiser)
+(put 'fresh 'scheme-indent-function 1)
+
+
+(require 'quail)
+
+;; Intentional
+(require 'intentional)
+
+(setq intentional-output-file "~/browse-intentions.json")
+
+(setq intentional-global-intentions
+      '(("Dev Work" always ("http://localhost:3000/*"))
+        ("Language Goals" always ("translate.google.com/*"))
+        ("Work on-call" always ("https://*.pagerduty.com/*"))
+        ("Work" (between-on-days "08:00" "18:00" (1 2 3 4 5))
+         ("https://*.atlassian.net/*"
+          "https://github.com/*"
+          "https://outlook.office.com/*"
+          "https://golang.org/*"
+          "https://*circleci.com/*"
+          "https://accounts.google.com/*"
+          "googleusercontent.com/*"
+          "travelaudience.com/*"
+          "codeclimate.com/*"))
+        ("Relax" (between "19:00" "21:00") ("https://youtube.com/*"))))
+
+(setq intentional-site-groups
+      '(("work" "https://*.atlassian.net/*" "https://github.com/*" "https://outlook.office.com/*" "https://golang.org/*" "travelaudience.com/*" "circleci.com/*")
+        ("clojure" "https://clojuredocs.org/*" "https://clojure.org/*" "https://cljdoc.org/*" "https://github.com/*" "https://clojureverse.org/*" "https://stackoverflow.com/*")
+        ("golang" "https://golang.org/*" "https://github.com/*" "https://godoc.org/*" "https://stackoverflow.com/*")))
+
+(setq intentional-tag-intentions
+      '(("shopping" ("amazon.com/*" "amazon.de/*"))
+        ("deepw" ("mynoise.net/*"))
+        ("clojure" ("clojure"))))
+
+(setq intentional-save-to-journal nil)
+
+(setq intentional-extract-clock-body-urls t)
+
+
+;;; Java LSP
+(require 'lsp-java)
+(add-hook 'java-mode-hook #'lsp)
