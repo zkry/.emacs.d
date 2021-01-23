@@ -385,3 +385,5 @@
   (define-key map "\e[1;P19" (kbd "s-k"))
   (define-key map "\e[1;P57" (kbd "C-M-SPC"))
   (define-key map "\e[1;P58" (kbd "C-a")))
+
+(global-set-key (kbd "C-M-SPC") #'sp-mark-sexp)
