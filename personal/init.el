@@ -22,8 +22,6 @@
 
 ;;; Code:
 
-(message "Hello World!")
-
 (provide 'init)
 
 ;;; init.el ends here
@@ -264,7 +262,7 @@
 
 ;; keybindings
 (require 'smartparens)
-(require 'mu4e)
+
 (global-set-key (kbd "C-§ i") #'zr/open-init)
 (global-set-key (kbd "C-§ o") #'zr/open-organizer)
 (global-set-key (kbd "C-§ n") #'zr/open-notes)
