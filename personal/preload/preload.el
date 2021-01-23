@@ -1,3 +1,6 @@
+(when (not (string-equal system-type "darwin"))
+  (setq gnutls-algorithm-priority "NORMAL:-VERS-TLS1.3"))
+
 (setq prelude-theme 'leuven)
 
 (add-to-list 'load-path "~/dev/emacs/org-mode/lisp/")
