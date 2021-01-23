@@ -159,35 +159,35 @@
 (add-hook 'dired-mode-hook 'org-download-enable)
 (setq-default org-download-image-dir "./media")
 
-(require 'org-roam)
-(setq org-roam-directory "/Users/zromero/Dropbox/org/roam")
-(add-hook 'after-init-hook 'org-roam-mode)
-(define-key org-mode-map (kbd "C-c n i") #'org-roam-insert)
-(define-key org-mode-map (kbd "C-c n I") #'org-roam-insert-immediate)
-(define-key org-roam-mode-map (kbd "C-c n a t") #'org-roam-dailies-today)
-(define-key org-roam-mode-map (kbd "C-c n a y") #'org-roam-dailies-yesterday)
-(define-key org-roam-mode-map (kbd "C-c n a m") #'org-roam-dailies-tomorrow)
-(define-key org-roam-mode-map (kbd "C-c n l") #'org-roam)
-(define-key org-roam-mode-map (kbd "C-c n f") #'org-roam-find-file)
-(define-key org-roam-mode-map (kbd "C-c n g") #'org-roam-graph)
+
 
 
 (setq org-id-link-to-org-use-id t)
 
-(require 'org-journal)
-(define-key org-roam-mode-map (kbd "C-c n j") #'org-journal-new-entry)
-(setq org-journal-date-prefix "#+title: "
-      org-journal-file-format "%Y-%m-%d.org"
-      org-journal-dir "/Users/zromero/Dropbox/org/roam/daily/"
-      org-journal-date-format "%A, %d %B %Y"
-      org-journal-time-prefix  "** ")
+(when zr/advanced-features
+  (require 'org-roam)
+  (setq org-roam-directory "/Users/zromero/Dropbox/org/roam")
+  (add-hook 'after-init-hook 'org-roam-mode)
+  (define-key org-mode-map (kbd "C-c n i") #'org-roam-insert)
+  (define-key org-mode-map (kbd "C-c n I") #'org-roam-insert-immediate)
+  (define-key org-roam-mode-map (kbd "C-c n a t") #'org-roam-dailies-today)
+  (define-key org-roam-mode-map (kbd "C-c n a y") #'org-roam-dailies-yesterday)
+  (define-key org-roam-mode-map (kbd "C-c n a m") #'org-roam-dailies-tomorrow)
+  (define-key org-roam-mode-map (kbd "C-c n l") #'org-roam)
+  (define-key org-roam-mode-map (kbd "C-c n f") #'org-roam-find-file)
+  (define-key org-roam-mode-map (kbd "C-c n g") #'org-roam-graph)
 
-(require 'deft)
-(define-key org-roam-mode-map (kbd "C-c n d") #'deft)
-(setq deft-recursive t
-      deft-use-filter-string-for-filename t
-      deft-default-extension "org"
-      deft-directory "/Users/zromero/Dropbox/org/roam")
+  (require 'org-journal)
+  (define-key org-roam-mode-map (kbd "C-c n j") #'org-journal-new-entry)
+  (setq org-journal-date-prefix "#+title: "
+        org-journal-file-format "%Y-%m-%d.org"
+        org-journal-dir "/Users/zromero/Dropbox/org/roam/daily/"
+        org-journal-date-format "%A, %d %B %Y"
+        org-journal-time-prefix  "** ")
 
-(require 'org-fc)
-(setq org-fc-directories '("/Users/zromero/Dropbox/org/"))
+  (require 'deft)
+  (define-key org-roam-mode-map (kbd "C-c n d") #'deft)
+  (setq deft-recursive t
+        deft-use-filter-string-for-filename t
+        deft-default-extension "org"
+        deft-directory "/Users/zromero/Dropbox/org/roam"))

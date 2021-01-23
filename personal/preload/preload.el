@@ -1,6 +1,7 @@
 (defvar zr/advanced-features (string-equal system-type "darwin"))
 
 (when (not zr/advanced-features)
+  (setq prelude-theme 'zenburn)
   (setq gnutls-algorithm-priority "NORMAL:-VERS-TLS1.3"))
 
 (when zr/advanced-features

@@ -85,7 +85,20 @@
     volatile-highlights
     which-key
     zenburn-theme
-    zop-to-char)
+    zop-to-char
+    ob-go
+    org-download
+    org-roam
+    org-pomodoro
+    git-link
+    turkish
+    ibuffer-projectile
+    flycheck-clj-kondo
+    yasnippet
+    yasnippet-snippets
+    forge
+    quelpa
+    lsp-java)
   "A list of packages to ensure are installed at launch.")
 
 (defun prelude-packages-installed-p ()

@@ -314,14 +314,12 @@
 (setq auth-sources '("~/.authinfo"))
 (require 'forge)
 
-
+(if (not zr/advanced-features)
+    (quelpa '(awqat :repo "zkry/awqat" :fetcher github)))
 (require 'awqat)
-;; Berlin
-(setq calendar-latitude 52.499
-      calendar-longitude 13.436)
 ;; AZ
-;;(setq calendar-latitude 40.98
-;;      calendar-longitude 28.8)
+(setq calendar-latitude 40.98
+      calendar-longitude 28.8)
 
 (setq awqat-asr-hanafi nil)
 (awqat-set-preset-diyanet)
@@ -340,39 +338,40 @@
 (require 'quail)
 
 ;; Intentional
-(require 'intentional)
+(when zr/advanced-features
+  (require 'intentional)
 
-(setq intentional-output-file "~/browse-intentions.json")
+  (setq intentional-output-file "~/browse-intentions.json")
 
-(setq intentional-global-intentions
-      '(("Dev Work" always ("http://localhost:3000/*"))
-        ("Language Goals" always ("translate.google.com/*"))
-        ("Work on-call" always ("https://*.pagerduty.com/*"))
-        ("Work" (between-on-days "08:00" "18:00" (1 2 3 4 5))
-         ("https://*.atlassian.net/*"
-          "https://github.com/*"
-          "https://outlook.office.com/*"
-          "https://golang.org/*"
-          "https://*circleci.com/*"
-          "https://accounts.google.com/*"
-          "googleusercontent.com/*"
-          "travelaudience.com/*"
-          "codeclimate.com/*"))
-        ("Relax" (between "19:00" "21:00") ("https://youtube.com/*"))))
+  (setq intentional-global-intentions
+        '(("Dev Work" always ("http://localhost:3000/*"))
+          ("Language Goals" always ("translate.google.com/*"))
+          ("Work on-call" always ("https://*.pagerduty.com/*"))
+          ("Work" (between-on-days "08:00" "18:00" (1 2 3 4 5))
+           ("https://*.atlassian.net/*"
+            "https://github.com/*"
+            "https://outlook.office.com/*"
+            "https://golang.org/*"
+            "https://*circleci.com/*"
+            "https://accounts.google.com/*"
+            "googleusercontent.com/*"
+            "travelaudience.com/*"
+            "codeclimate.com/*"))
+          ("Relax" (between "19:00" "21:00") ("https://youtube.com/*"))))
 
-(setq intentional-site-groups
-      '(("work" "https://*.atlassian.net/*" "https://github.com/*" "https://outlook.office.com/*" "https://golang.org/*" "travelaudience.com/*" "circleci.com/*")
-        ("clojure" "https://clojuredocs.org/*" "https://clojure.org/*" "https://cljdoc.org/*" "https://github.com/*" "https://clojureverse.org/*" "https://stackoverflow.com/*")
-        ("golang" "https://golang.org/*" "https://github.com/*" "https://godoc.org/*" "https://stackoverflow.com/*")))
+  (setq intentional-site-groups
+        '(("work" "https://*.atlassian.net/*" "https://github.com/*" "https://outlook.office.com/*" "https://golang.org/*" "travelaudience.com/*" "circleci.com/*")
+          ("clojure" "https://clojuredocs.org/*" "https://clojure.org/*" "https://cljdoc.org/*" "https://github.com/*" "https://clojureverse.org/*" "https://stackoverflow.com/*")
+          ("golang" "https://golang.org/*" "https://github.com/*" "https://godoc.org/*" "https://stackoverflow.com/*")))
 
-(setq intentional-tag-intentions
-      '(("shopping" ("amazon.com/*" "amazon.de/*"))
-        ("deepw" ("mynoise.net/*"))
-        ("clojure" ("clojure"))))
+  (setq intentional-tag-intentions
+        '(("shopping" ("amazon.com/*" "amazon.de/*"))
+          ("deepw" ("mynoise.net/*"))
+          ("clojure" ("clojure"))))
 
-(setq intentional-save-to-journal nil)
+  (setq intentional-save-to-journal nil)
 
-(setq intentional-extract-clock-body-urls t)
+  (setq intentional-extract-clock-body-urls t))
 
 
 ;;; Java LSP
