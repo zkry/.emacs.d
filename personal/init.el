@@ -377,3 +377,11 @@
 ;;; Java LSP
 (require 'lsp-java)
 (add-hook 'java-mode-hook #'lsp)
+
+(let ((map (if (boundp 'input-decode-map)
+               input-decode-map
+             function-key-map)))
+  (define-key map "\e[1;P27" (kbd "s-s"))
+  (define-key map "\e[1;P19" (kbd "s-k"))
+  (define-key map "\e[1;P57" (kbd "C-M-SPC"))
+  (define-key map "\e[1;P58" (kbd "C-a")))
