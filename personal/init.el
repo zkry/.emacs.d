@@ -47,25 +47,27 @@
 (setq gc-cons-threshold 100000000)
 (setq read-process-output-max (* 1024 1024))
 
+(defvar zr/org-directory "~/Dropbox/org/")
+
 (defun zr/open-init ()
   (interactive)
   (find-file "~/.emacs.d/personal/init.el"))
 
 (defun zr/open-refile ()
   (interactive)
-  (find-file "~/Dropbox/org/refile.org"))
+  (find-file (concat zr/org-directory "refile.org")))
 
 (defun zr/open-organizer ()
   (interactive)
-  (find-file "~/Dropbox/org/organizerV2.org"))
+  (find-file (concat zr/org-directory "organizerV2.org")))
 
 (defun zr/open-notes ()
   (interactive)
-  (find-file "~/Dropbox/org/notesV2.org"))
+  (find-file (concat zr/org-directory "notesV2.org")))
 
 (defun zr/til ()
   (interactive)
-  (find-file "~/Dropbox/org/notesV2.org")
+  (find-file (concat zr/org-directory "notesV2.org"))
   (goto-char (point-min))
   (search-forward "* TIL")
   (insert (format "\n** %s " (format-time-string "%d-%m-%Y"))))
@@ -267,6 +269,10 @@
 (global-set-key (kbd "C-§ o") #'zr/open-organizer)
 (global-set-key (kbd "C-§ n") #'zr/open-notes)
 (global-set-key (kbd "C-§ r") #'zr/open-refile)
+(global-set-key (kbd "C-g i") #'zr/open-init)
+(global-set-key (kbd "C-g o") #'zr/open-organizer)
+(global-set-key (kbd "C-g n") #'zr/open-notes)
+(global-set-key (kbd "C-g r") #'zr/open-refile)
 (global-set-key (kbd "<C-M-backspace>") #'sp-splice-sexp-killing-backward)
 (global-set-key (kbd "C-M-]") #'sp-rewrap-sexp)
 (global-set-key (kbd "C-M-SPC") #'sp-mark-sexp)
@@ -377,6 +383,8 @@
 ;;; Java LSP
 (require 'lsp-java)
 (add-hook 'java-mode-hook #'lsp)
+(setq lsp-java-jdt-download-url  "https://download.eclipse.org/jdtls/milestones/0.57.0/jdt-language-server-0.57.0-202006172108.tar.gz")
+
 
 (let ((map (if (boundp 'input-decode-map)
                input-decode-map
@@ -387,3 +395,4 @@
   (define-key map "\e[1;P58" (kbd "C-a")))
 
 (global-set-key (kbd "C-M-SPC") #'sp-mark-sexp)
+(global-set-key (kbd "s-u") #'revert-buffer)
